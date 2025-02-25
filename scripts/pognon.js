@@ -17,6 +17,7 @@ module.exports = {
 		if (tag.startsWith("#")) {
 			tag = tag.replace('#','');
 		}
+		tag = tag.toUpperCase();
 		let header = {
 			"Authorization": "Bearer " + clash_token
 		};
@@ -138,7 +139,7 @@ module.exports = {
 		res += "Thunes deja investie: " + formatteur.format(costpayed)+"\n";
 		res += "Reste a mettre: " + formatteur.format(costAllMax - costpayed)+"\n";
 		res += "\n";
-		res +="Total de po a mettre pour carte passable: " +  formatteur.format(todayPo)+"\n";
+		res +="Total de po à mettre pour les cartes prêtes à monter de niveau: " +  formatteur.format(todayPo)+"\n";
 		return res;
 	} 
 	
