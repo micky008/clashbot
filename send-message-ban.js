@@ -1,13 +1,12 @@
-const { SlashCommandBuilder } = require('discord.js');
-const { clash_token } = require('../config.json');
+const { REST, Routes } = require('discord.js');
+const { channel_all_id, token,clash_token } = require('./config.json');
 const https = require('node:https');
 
-module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('kohlanta')
-		.setDescription('Qui sera banni ?'),
-	async execute(interaction) {
-		
+const rest = new REST().setToken(token);
+
+(async () => {
+	try {
+		let montext ={ "content": "mon text" };
 		var header = {
 			"Authorization": "Bearer " + clash_token	
 		};
@@ -49,14 +48,19 @@ module.exports = {
 				}
 				resString+="\n";
 				resString += "Qui seront les prochains élus ?"
-				await interaction.reply(resString);
-			});			
+				montext.content = resString;
+				const data = await rest.post(Routes.channelMessages(channel_all_id),{ body: montext });
+				console.log('Message send');
+			});
+			
 		});
+
 		reqGet.end();
 		reqGet.on('error', function(e) {
 			console.error(e);
 		});
 				
-	},
-};
-
+	} catch (error) {
+		console.error(error);
+	}
+})();
