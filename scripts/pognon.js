@@ -36,6 +36,7 @@ module.exports = {
 			res.on('data', chunk => {
 				fullJson += chunk;
 			});
+			
 			res.on('end', async () => {
 				let player = JSON.parse(fullJson);
 				let pognon = new Pognon(player);

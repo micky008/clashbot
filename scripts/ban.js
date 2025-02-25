@@ -22,11 +22,16 @@ module.exports = {
 			headers: header
 		};
 		optionsget.path = optionsget.path.replace("#ID", "28JCGQ0");
-
+		
+		let fullJson = ""
+		
 		var reqGet = https.request(optionsget, res => {
 			playersWithNoDon = [];
-			res.on('data', async d => {
-				let players = JSON.parse(d).items;
+			res.on('data', async chunk => {
+				fullJson += chunk;
+			});
+			res.on('end', async () => {
+				let players = JSON.parse(fullJson).items;
 				for (let player of players) {
 					let res = "";	
 					if (player.donations == 0) {
