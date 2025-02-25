@@ -5,7 +5,7 @@ const https = require('node:https');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('pognon')
-		.setDescription('Savoir combien de gold ta dépenser dans ce jeux')
+		.setDescription('Savoir combien de gold ta dépensé dans ce jeu')
 		.addStringOption(option =>
 			option
 				.setName('tag')

@@ -5,7 +5,7 @@ const https = require('node:https');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('kohlanta')
-		.setDescription('Qui serra banni ?'),
+		.setDescription('Qui sera banni ?'),
 	async execute(interaction) {
 		
 		var playersWithNoDon = [];
@@ -26,31 +26,32 @@ module.exports = {
 		let fullJson = ""
 		
 		var reqGet = https.request(optionsget, res => {
-			playersWithNoDon = [];
+			let playersWithNoDon = [];
+			let donnepas = [];
+			let inactifs = [];
 			res.on('data', async chunk => {
 				fullJson += chunk;
 			});
-			res.on('end', async () => {
+			res.on('end', async () => {				
 				let players = JSON.parse(fullJson).items;
-				for (let player of players) {
-					let res = "";	
-					if (player.donations == 0) {
-						res = player.name;
-						if (player.donationsReceived > 0) {
-							res += " :point_left:";
-						}
+				for (let player of players) {						
+					if (player.donations == 0 && player.donationsReceived > 0) { //radin
+						donnepas.push(player.name)
+					}else if (player.donations == 0 && player.donationsReceived == 0) { //parasites
+						inactifs.push(player.name)
 					}
-					if (res == "") {
-						continue;
-					}
-					playersWithNoDon.push(res)
 				}
-				let resString = "Et les nominés sont:\n";
-				for (let playerName of playersWithNoDon) {
+				let resString = "Dans la catégorie 'Donne pas et ramasse pas' :face_in_clouds: les nominés sont:\n";				
+				for (let playerName of inactifs) {
 					resString += playerName + "\n";
 				}
 				resString+="\n";
-				resString += "Qui serront les prochains élu ?"
+				resString += "Dans la catégorie 'Ne donne pas mais ramasse':black_joker: :head_shaking_horizontally: les nominés sont:\n";				
+				for (let playerName of donnepas) {
+					resString += playerName + "\n";
+				}
+				resString+="\n";
+				resString += "Qui seront les prochains élus ?"
 				await interaction.reply(resString);
 			});
 			
