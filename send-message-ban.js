@@ -1,5 +1,5 @@
 const { REST, Routes } = require('discord.js');
-const { channel_all_id, token,clash_token } = require('./config.json');
+const { channel_all, token,clash_token } = require('./config.json');
 const https = require('node:https');
 
 const rest = new REST().setToken(token);
@@ -49,7 +49,7 @@ const rest = new REST().setToken(token);
 				resString+="\n";
 				resString += "Qui seront les prochains élus ?"
 				montext.content = resString;
-				const data = await rest.post(Routes.channelMessages(channel_all_id),{ body: montext });
+				const data = await rest.post(Routes.channelMessages(channel_all),{ body: montext });
 				console.log('Message send');
 			});
 			

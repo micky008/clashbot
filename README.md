@@ -10,6 +10,7 @@ pour le moment le bot a 3 commandes slash
 - ping (pong) (/ping)
 - qui est en lice pour etre bannis de clash royale (/kohlanta)
 - combien de pognon on a utiliser dans clash royale (/pognon <tag d'un joueur>)
+- tous les tags des joueurs du clan vas de paire avec pognon (/tags) 
 
 Ne pas oublié de renommer config-vanillia.json en config.json et le remplir
 
@@ -19,8 +20,9 @@ Ne pas oublié de renommer config-vanillia.json en config.json et le remplir
   "clientId": "",
   "guildId": "",
   "clash_token" : "",
-  "channel_all_id": "",
-  "channel_chef": ""
+  "channel_all": "",
+  "channel_chef": "",
+  "channel_test": ""
 }
 ```
 - token: le token du bot (une sorte de jwt en beacoup plus court)
@@ -29,5 +31,6 @@ Ne pas oublié de renommer config-vanillia.json en config.json et le remplir
 - clash_token: la clé généré pas l''api clash royale (c''est un jwt)
 - channel_all_id: discord -> clickj droit sur le channel copier l''id (c''est le channel ou tout le monde peux parler (serie de chiffre)
 - channel_chef: c''est le channel ou seul les chef peuvent parler (serie de chiffre)
+- channel_test: un channel de test ou on peux tester les messages (serie de chiffre0
 
 

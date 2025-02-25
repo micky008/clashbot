@@ -3,7 +3,7 @@
 	"clientId": "",
 	"guildId": "",
 	"clash_token" : "",
-	"channel_all_id": "",
+	"channel_all": "",
 	"channel_chef": "",
-	"test_channel":""
+	"channel_test":""
 }

@@ -1,5 +1,5 @@
 const { REST, Routes } = require('discord.js');
-const { test_channel, token,clash_token } = require('./config.json');
+const { channel_test, token,clash_token } = require('./config.json');
 const https = require('node:https');
 
 const rest = new REST().setToken(token);
@@ -39,7 +39,7 @@ const rest = new REST().setToken(token);
 				resString+="\n";
 				montext.content = resString;
 				montext.embeds.push(emb)
-				const data = await rest.post(Routes.channelMessages(test_channel),{ body: montext });
+				const data = await rest.post(Routes.channelMessages(channel_test),{ body: montext });
 				console.log('Message send');
 			});
 			
