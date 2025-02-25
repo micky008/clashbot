@@ -10,13 +10,13 @@ module.exports = {
 			option
 				.setName('tag')
 				.setDescription('le tag du joueur')
-				.setRequired(true))
-		,
+				.setRequired(true)),		
 	async execute(interaction) {
 		let tag = interaction.options.getString('tag');
 		if (tag.startsWith("#")) {
 			tag = tag.replace('#','');
 		}
+		tag = tag.toUpperCase();
 		let header = {
 			"Authorization": "Bearer " + clash_token
 		};
@@ -29,26 +29,32 @@ module.exports = {
 			headers: header
 		};
 		optionsget.path = optionsget.path.replace("#ID", tag);
-		//LVLURYQ
+		//LVLURYQ //micky008
 		
-		var reqGet = https.request(optionsget, async res => {
+		let fulljson ="";
+		
+		var reqGet = https.request(optionsget, res => {
 			
-			await res.on('data', async d => {
-				let player = JSON.parse(d);
+			res.on('data', chunk => {
+				fulljson += chunk;			
+			});
+			res.on('end', async () => {
+				let player = JSON.parse(fulljson);
 				let pognon = new Pognon(player);
 				let res = pognon.getPognon();
 				await interaction.reply(res);
+				
 			});
-			
-		});
 
-		reqGet.end();
+		});
+		reqGet.end();		
 		reqGet.on('error', function(e) {
 			console.error(e);
 		});
-		
-	},
+
+	}
 };
+
 
  class Pognon {
 	
@@ -62,19 +68,17 @@ module.exports = {
 	}
 	
 	getPognon() {
-		
 		let todayPo = 0;
-        let costpayed = 0;
-        let costAllMax = 0;
-		
-		 for (let c of this.cards) {
-           let card = FactoryCard.getCarRarityCard(c);
-            costpayed += card.getManyCardCost();
-            costAllMax += card.getMaxPOForOneCard();
-            if (card.haveEnoughCardForNextStep()) {
-                todayPo += card.getPOForNextStep();
-            }
-        }
+		let costpayed = 0;
+		let costAllMax = 0;
+		for (let c of this.cards) {
+			let card = FactoryCard.getCarRarityCard(c);
+			costpayed += card.getManyCardCost();
+			costAllMax += card.getMaxPOForOneCard();
+			if (card.haveEnoughCardForNextStep()) {
+				todayPo += card.getPOForNextStep();
+			}
+		}
 		let formatteur = new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" });
 		res = player.name+"\n";
 		res += "Cout Max de tts les Cartes: " + formatteur.format(costAllMax);
@@ -89,9 +93,9 @@ module.exports = {
 
  class AbstractCard {
 	
-	 card; //Card
-      type; //String
-      tab;//Tableaux
+	card; //Card
+	type; //String
+	tab;//Tableaux
 
    constructor(card, type, tab) {
         this.card = card;
@@ -281,16 +285,16 @@ class Tableaux {
 
  class Player {
 	tag;//string
-    name;//string
-    cards; //card[]
-    supportCards;//card[]
+	name;//string
+	cards; //card[]
+	supportCards;//card[]
 
 }
 
  class Card {
-	  name; //string
-      level;//int
-      maxLevel;//int
-      rarity;//string
-      count;//int
+	name; //string
+	level;//int
+	maxLevel;//int
+	rarity;//string
+	count;//int
 }

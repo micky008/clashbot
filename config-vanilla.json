@@ -4,6 +4,6 @@
 	"guildId": "",
 	"clash_token" : "",
 	"channel_all_id": "",
-	"channel_chef": ""
-	
+	"channel_chef": "",
+	"test_channel":""
 }
