@@ -60,7 +60,7 @@ class Pognon {
 
     player;
     cards;
-
+	
     constructor(p) {
         this.player = p;
         this.cards = p.cards;
@@ -89,12 +89,7 @@ class Pognon {
         return tabPo[card.level];
     }
 
-    howManyCards(cards) {
-        countCommon = 0;
-        countRare = 0;
-        countEpic = 0;
-        countLegend = 0;
-        countChamp = 0;
+    howManyCostCards(cards) {
         pos = [];
         nbs = [];
         costpayed = 0;
@@ -102,27 +97,22 @@ class Pognon {
         for (let card of cards) {
             switch (card.rarity) {
                 case "common":
-                    countCommon++;
                     pos = RefCards.carte_commune_po;
                     nbs = RefCards.carte_commune_nb;
                     break;
                 case "rare":
-                    countRare++;
                     pos = RefCards.carte_rare_po;
                     nbs = RefCards.carte_rare_nb;
                     break;
                 case "epic":
-                    countEpic++;
                     pos = RefCards.carte_epic_po;
                     nbs = RefCards.carte_epic_nb;
                     break;
                 case "legendary":
-                    countLegend++;
                     pos = RefCards.carte_legendaire_po;
                     nbs = RefCards.carte_lengendaire_nb;
                     break;
                 case "champion":
-                    countChamp++;
                     pos = RefCards.carte_champion_po;
                     nbs = RefCards.carte_champion_nb;
                     break;
@@ -131,28 +121,23 @@ class Pognon {
             todayPo += this.calculCartePo(card, pos, nbs);
         }
         res = [];
-        res[0] = countCommon * RefCards.max_commune_po;
-        res[1] = countRare * RefCards.max_rare_po;
-        res[2] = countEpic * RefCards.max_epic_po;
-        res[3] = countLegend * RefCards.max_legendaire_po;
-        res[4] = countChamp * RefCards.max_champion_po;
-        res[5] = costpayed;
-        res[6] = todayPo;
+        res[0] = costpayed;
+        res[1] = todayPo;
         return res;
     }
 
 
     getPognon() {
 
-        let res[] = this.howManyCards(this.cards);
-        let costAllMax = (res[0] + res[1] + res[2] + res[3] + res[4]);
+        let res[] = this.howManyCostCards(this.cards);
+        let costAllMax = 28866950; // faut le changer quand une nouvelle carte sortira. Doit etre calculé avec /v1/cards mais flemme
         let formatteur = new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" });
         let resStr = this.player.name + "\n";
         resStr += "Cout Max de tts les Cartes: " + formatteur.format(costAllMax) + "\n";
-        resStr += "Thunes deja investie: " + formatteur.format(res[5]) + "\n";
-        resStr += "Reste a mettre: " + formatteur.format(costAllMax - res[5]) + "\n";
+        resStr += "Thunes deja investie: " + formatteur.format(res[0]) + "\n";
+        resStr += "Reste a mettre: " + formatteur.format(costAllMax - res[0]) + "\n";
         resStr += "\n";
-        resStr += "Total de po à mettre pour les cartes prêtes à monter de niveau: " + formatteur.format(res[6]) + "\n";
+        resStr += "Total de po à mettre pour les cartes prêtes à monter de niveau: " + formatteur.format(res[1]) + "\n";
         return resStr;
     }
 
