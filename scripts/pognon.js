@@ -120,7 +120,7 @@ class Pognon {
             costpayed += this.calculCost(card, pos);
             todayPo += this.calculCartePo(card, pos, nbs);
         }
-        res = [];
+        let res = [];
         res[0] = costpayed;
         res[1] = todayPo;
         return res;
@@ -129,7 +129,7 @@ class Pognon {
 
     getPognon() {
 
-        let res[] = this.howManyCostCards(this.cards);
+        let res = this.howManyCostCards(this.cards);
         let costAllMax = 28866950; // faut le changer quand une nouvelle carte sortira. Doit etre calculé avec /v1/cards mais flemme
         let formatteur = new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" });
         let resStr = this.player.name + "\n";
