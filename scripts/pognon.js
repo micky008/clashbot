@@ -162,7 +162,7 @@ module.exports = {
 }
 
 class RefCards {
-
+//merci https://clash.world/guides/card-upgrade-costs/
     static carte_commune_po= [0, 5, 20, 50, 150, 400, 1000, 2000, 4000, 8000, 15000, 35000, 75000, 100000];
     static carte_commune_nb= [0, 1, 2, 4, 10, 20, 50, 100, 200, 400, 800, 1000, 1500, 3000, 5000];
     static max_commune_po = 240625;
