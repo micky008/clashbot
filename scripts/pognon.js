@@ -90,10 +90,10 @@ class Pognon {
     }
 
     howManyCostCards(cards) {
-        pos = [];
-        nbs = [];
-        costpayed = 0;
-        todayPo = 0;
+        let pos = [];
+        let nbs = [];
+        let costpayed = 0;
+        let todayPo = 0;
         for (let card of cards) {
             switch (card.rarity) {
                 case "common":
