@@ -1,5 +1,5 @@
 const { REST, Routes } = require('discord.js');
-const { channel_test, token,clash_token } = require('./config.json');
+const { channel_all,channel_test, token,clash_token } = require('./config.json');
 const https = require('node:https');
 
 const rest = new REST().setToken(token);
@@ -28,18 +28,27 @@ const rest = new REST().setToken(token);
 			res.on('data', async chunk => {
 				fullJson += chunk;
 			});
+			
 			res.on('end', async () => {
-				let players = JSON.parse(fullJson).items;				
-				let resString = "Voici TOUS les tags des joueurs du clans\n\n";		
-				let resEmbeded="";
-				for (let player of players) {
-					resEmbeded += `${player.name}: ${player.tag}\n`;
+				let players = JSON.parse(fullJson)["items"];
+				players.sort( (a, b) => {
+					if (a.donations > b.donations){
+						return -1;
+					}else if (a.donations < b.donations){
+						return 1;
+					}
+					return 0;
+				});
+               
+			    let resStr = "Les 5 (Jean-marc) Généreux sont:\n";
+				for (let i=0;i<5;i++){
+					resStr += `${players[i].name} : ${players[i].donations}\n`;
 				}
-				let emb = new Embeded("all tags", resEmbeded);
-				resString+="\n";
-				montext.content = resString;
-				montext.embeds.push(emb)
-				const data = await rest.post(Routes.channelMessages(channel_test),{ body: montext });
+				resStr += "Merci a vous les gars ! :saluting_face:"
+				//return resStr;
+				montext.content = resStr;
+				//montext.embeds.push(emb)
+				const data = await rest.post(Routes.channelMessages(channel_all),{ body: montext });
 				console.log('Message send');
 			});
 			
