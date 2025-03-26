@@ -48,7 +48,7 @@ const rest = new REST().setToken(token);
 				//return resStr;
 				montext.content = resStr;
 				//montext.embeds.push(emb)
-				const data = await rest.post(Routes.channelMessages(channel_all),{ body: montext });
+				const data = await rest.post(Routes.channelMessages(channel_test),{ body: montext });
 				console.log('Message send');
 			});
 			
