@@ -228,7 +228,10 @@ class MyClashHttp {
                 res.on('end', () => {
                     let items = JSON.parse(fullJson); //card[]
                     let max = 0;
-                    for (let card of items) {
+		    let pos = 0;
+		    let cards = items.items;
+			cards.push(...items.supportItems)
+                    for (let card of cards) {
                         switch (card.rarity) {
                             case "common":
                                 pos = RefCards.max_commune_po;
