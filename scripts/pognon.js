@@ -20,10 +20,10 @@ module.exports = {
         tag = tag.toUpperCase();
 
         let myhttp = new MyClashHttp();
-        myhttp.get(tag).then(async (fullJson) => {
+        myhttp.getPlayer(tag).then(async (fullJson) => {
             let player = JSON.parse(fullJson);
             let pognon = new Pognon(player);
-            let res = pognon.getPognon();
+            let res = await pognon.getPognon();
             await interaction.reply(res);
         }).catch(async (err) => {
             await interaction.reply("le tag " + tag + " n'existe pas");
@@ -34,7 +34,7 @@ module.exports = {
 class Pognon {
 
     player;
-    cards;
+    cards; //PlayedCarte
 
     constructor(p) {
         this.player = p;
@@ -43,7 +43,7 @@ class Pognon {
     }
 
 
-    calculCost(card, tab) {
+    calculCost(card, tab) { //card = PlayedCard
         let res = 0;
         let max = card.level > card.maxLevel ? card.maxLevel : card.level;
         for (let i = 0; i < max; i++) {
@@ -102,10 +102,10 @@ class Pognon {
     }
 
 
-    getPognon() {
-
+    async getPognon() { //promise<string>
         let res = this.howManyCostCards(this.cards);
-        let costAllMax = 28866950; // faut le changer quand une nouvelle carte sortira. Doit etre calculé avec /v1/cards mais flemme
+        let myhttp = new MyClashHttp();
+        let costAllMax = await myhttp.getCostAllCards();
         let formatteur = new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" });
         let resStr = this.player.name + "\n";
         resStr += "Cout Max de tts les Cartes: " + formatteur.format(costAllMax) + "\n";
@@ -113,7 +113,7 @@ class Pognon {
         resStr += "Reste a mettre: " + formatteur.format(costAllMax - res[0]) + "\n";
         resStr += "\n";
         resStr += "Total de po à mettre pour les cartes prêtes à monter de niveau: " + formatteur.format(res[1]) + "\n";
-        return resStr;
+        return Promise.resolve(resStr);
     }
 
 }
@@ -121,15 +121,18 @@ class Pognon {
 class Player {
     tag;//string
     name;//string
-    cards; //card[]
-    supportCards;//card[]
+    cards; //PlayedCard[]
+    supportCards;//PlayedCard[]
 }
 
 class Card {
     name; //string
-    level;//int
     maxLevel;//int
     rarity;//string
+}
+
+class PlayedCard extends Card {
+    level;//int
     count;//int
 }
 
@@ -163,7 +166,7 @@ class RefCards {
 }
 
 class MyClashHttp {
-    get(tag) {//promise<string>,error
+    getPlayer(tag) {//promise<string>,error
         return new Promise((resolve, reject) => {
             let header = {
                 "Authorization": "Bearer " + clash_token
@@ -197,7 +200,64 @@ class MyClashHttp {
             });
         });
     }
-}
 
+
+    getCostAllCards() {//promise<number>,error
+        return new Promise((resolve, reject) => {
+            let header = {
+                "Authorization": "Bearer " + clash_token
+            };
+            let optionsget = {
+                host: 'api.clashroyale.com',
+                port: 443,
+                path: '/v1/cards', // the rest of the url with parameters if needed
+                method: 'GET',
+                headers: header
+            };
+            //LVLURYQ
+            let fullJson = "";
+            var reqGet = https.request(optionsget, res => {
+                if (res.statusCode == 404) {
+                    reject("tag inconnue");
+                    return;
+                }
+
+                res.on('data', chunk => {
+                    fullJson += chunk;
+                });
+                res.on('end', () => {
+                    let items = JSON.parse(fullJson); //card[]
+                    let max = 0;
+                    for (let card of items) {
+                        switch (card.rarity) {
+                            case "common":
+                                pos = RefCards.max_commune_po;
+                                break;
+                            case "rare":
+                                pos = RefCards.max_rare_po;
+                                break;
+                            case "epic":
+                                pos = RefCards.max_epic_po;
+                                break;
+                            case "legendary":
+                                pos = RefCards.max_legendaire_po;
+                                break;
+                            case "champion":
+                                pos = RefCards.max_champion_po;
+                                break;
+                        }
+                        max += pos;
+                    }
+                    resolve(max);
+                });
+            });
+            reqGet.end();
+            reqGet.on('error', function (e) {
+                console.error(e);
+            });
+        });
+    }
+
+}
 
 
