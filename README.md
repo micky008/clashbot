@@ -11,6 +11,7 @@ pour le moment le bot a 4 commandes slash
 - qui est en lice pour etre bannis de clash royale (/kohlanta)
 - combien de pognon on a utiliser dans clash royale (/pognon <tag d'un joueur>)
 - tous les tags des joueurs du clan vas de paire avec pognon (/tags) 
+- Qui sont les 5 plus gros donneurs (/genereux)
 
 Ne pas oublié de renommer config-vanillia.json en config.json et le remplir
 
@@ -38,3 +39,9 @@ Dans l'absolu on peux mettre n'importe quel channel... les noms ce sont les mien
 Le code de "pognon", "send-message-ban", bans.js est tres moche car je n'ai pas factoriser, refactoring... mais ca fonctionne...
 
 soyez indulgent merci :)
+
+## Script en mode cron
+
+Pour le moment il y a 2 script en mode cron
+- send-message-ban => meme code que le script ban.js mais adapter pour le cron
+- send-message-cube => envois juste un message dans un channel pour un rappel.
