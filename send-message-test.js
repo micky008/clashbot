@@ -1,83 +1,61 @@
-const { REST, Routes } = require('discord.js');
-const { channel_all,channel_test, token,clash_token } = require('./config.json');
+const { clash_token } = require('./config.json');
 const https = require('node:https');
+const { readFileSync } = require('node:fs');
 
-const rest = new REST().setToken(token);
+var header = {
+	"Authorization": "Bearer " + clash_token
+};
 
-(async () => {
-	try {
-		let montext ={ "content": "mon text", "embeds":[] };
-		var header = {
-			"Authorization": "Bearer " + clash_token	
-		};
+var optionsget = {
+	host: 'api.clashroyale.com',
+	port: 443,
+	path: '/v1/clans/%23#ID/members', // the rest of the url with parameters if needed
+	method: 'GET',
+	headers: header
+};
+optionsget.path = optionsget.path.replace("#ID", "28JCGQ0");
 
-		var optionsget = {
-			host : 'api.clashroyale.com',
-			port : 443,
-			path : '/v1/clans/%23#ID/members', // the rest of the url with parameters if needed
-			method : 'GET',
-			headers: header
-		};
-		optionsget.path = optionsget.path.replace("#ID", "28JCGQ0");
-		
-		let fullJson = ""
-		
-		var reqGet = https.request(optionsget, res => {
-			let donnepas = [];
-			let inactifs = [];
-			res.on('data', async chunk => {
-				fullJson += chunk;
-			});
-			
-			res.on('end', async () => {
-				let players = JSON.parse(fullJson)["items"];
-				players.sort( (a, b) => {
-					if (a.donations > b.donations){
-						return -1;
-					}else if (a.donations < b.donations){
-						return 1;
-					}
-					return 0;
-				});
-               
-			    let resStr = "Les 5 (Jean-marc) Généreux sont:\n";
-				for (let i=0;i<5;i++){
-					resStr += `${players[i].name} : ${players[i].donations}\n`;
-				}
-				resStr += "Merci a vous les gars ! :saluting_face:"
-				//return resStr;
-				montext.content = resStr;
-				//montext.embeds.push(emb)
-				const data = await rest.post(Routes.channelMessages(channel_test),{ body: montext });
-				console.log('Message send');
-			});
-			
-		});
+let fullJson = ""
 
-		reqGet.end();
-		reqGet.on('error', function(e) {
-			console.error(e);
-		});
-				
-	} catch (error) {
-		console.error(error);
-	}
-})();
+var reqGet = https.request(optionsget, res => {
+	let donnepas = [];
+	let inactifs = [];
+	res.on('data', async chunk => {
+		fullJson += chunk;
+	});
+	res.on('end', async () => {
+		let players = JSON.parse(fullJson).items;
+		for (let player of players) {
+			if (player.donations == 0 && player.donationsReceived > 0) { //radin
+				donnepas.push(player)
+			} else if (player.donations == 0 && player.donationsReceived == 0) { //parasites
+				inactifs.push(player)
+			}
+		}
+		let tableau = readFileSync("./clan.json", "utf-8");
+		let vendrediPlayers = JSON.parse(tableau);
 
-class Message {
-	content;
-	embeds;
-}
- 
-class Embeded {
-	title //string
-	type //article
-	description//string
-	color //int
-	constructor(title, descr){
-		this.title = title;
-		this.type = "article";
-		this.description = descr;
-		this.color = 0xEFFF00;
-	}
-}
+		let resString = "Dans la catégorie 'Donne pas et ramasse pas' :face_in_clouds: les nominés sont:\n";
+		for (let player of inactifs) {
+			if (vendrediPlayers.findIndex(ply => ply.tag == player.tag) >= 0) {
+				resString += player.name + "\n";
+			}
+		}
+		resString += "\n";
+		resString += "Dans la catégorie 'Ne donne pas mais ramasse':black_joker: :head_shaking_horizontally: les nominés sont:\n";
+		for (let player of donnepas) {
+			if (vendrediPlayers.findIndex(ply => ply.tag == player.tag) >= 0) {
+				resString += player.name + "\n";
+			}
+		}
+		resString += "\n";
+		resString += "Qui seront les prochains élus ?"
+		console.log(resString);
+	});
+});
+reqGet.end();
+reqGet.on('error', function (e) {
+	console.error(e);
+});
+
+
