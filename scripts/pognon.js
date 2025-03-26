@@ -18,49 +18,24 @@ module.exports = {
             tag = tag.replace('#', '');
         }
         tag = tag.toUpperCase();
-        let header = {
-            "Authorization": "Bearer " + clash_token
-        };
 
-        let optionsget = {
-            host: 'api.clashroyale.com',
-            port: 443,
-            path: '/v1/players/%23#ID', // the rest of the url with parameters if needed
-            method: 'GET',
-            headers: header
-        };
-        optionsget.path = optionsget.path.replace("#ID", tag);
-        //LVLURYQ
-        let fullJson = "";
-        var reqGet = https.request(optionsget, res => {
-
-            res.on('data', chunk => {
-                fullJson += chunk;
-            });
-
-            res.on('end', async () => {
-                let player = JSON.parse(fullJson);
-                let pognon = new Pognon(player);
-                let res = pognon.getPognon();
-                await interaction.reply(res);
-            });
-
-
+        let myhttp = new MyClashHttp();
+        myhttp.get(tag).then(async (fullJson) => {
+            let player = JSON.parse(fullJson);
+            let pognon = new Pognon(player);
+            let res = pognon.getPognon();
+            await interaction.reply(res);
+        }).catch(async (err) => {
+            await interaction.reply("le tag " + tag + " n'existe pas");
         });
-
-        reqGet.end();
-        reqGet.on('error', function (e) {
-            console.error(e);
-        });
-
-    },
+    }
 };
 
 class Pognon {
 
     player;
     cards;
-	
+
     constructor(p) {
         this.player = p;
         this.cards = p.cards;
@@ -148,7 +123,6 @@ class Player {
     name;//string
     cards; //card[]
     supportCards;//card[]
-
 }
 
 class Card {
@@ -187,3 +161,43 @@ class RefCards {
     static max_champion_carte = 31;
 
 }
+
+class MyClashHttp {
+    get(tag) {//promise<string>,error
+        return new Promise((resolve, reject) => {
+            let header = {
+                "Authorization": "Bearer " + clash_token
+            };
+            let optionsget = {
+                host: 'api.clashroyale.com',
+                port: 443,
+                path: '/v1/players/%23#ID', // the rest of the url with parameters if needed
+                method: 'GET',
+                headers: header
+            };
+            optionsget.path = optionsget.path.replace("#ID", tag);
+            //LVLURYQ
+            let fullJson = "";
+            var reqGet = https.request(optionsget, res => {
+                if (res.statusCode == 404) {
+                    reject("tag inconnue");
+                    return;
+                }
+
+                res.on('data', chunk => {
+                    fullJson += chunk;
+                });
+                res.on('end', () => {
+                    resolve(fullJson);
+                });
+            });
+            reqGet.end();
+            reqGet.on('error', function (e) {
+                console.error(e);
+            });
+        });
+    }
+}
+
+
+
