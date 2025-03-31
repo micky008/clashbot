@@ -9,8 +9,8 @@ ca lit tout les scripts dans le folder "scripts" et pousse "data" (dans les scri
 pour le moment le bot a 4 commandes slash
 - ping (pong) (/ping)
 - qui est en lice pour etre bannis de clash royale (/kohlanta)
-- combien de pognon on a utiliser dans clash royale (/pognon <tag d'un joueur>)
-- tous les tags des joueurs du clan vas de paire avec pognon (/tags) 
+- combien de pognon "le joueur que l'on recherche" a utilisé dans clash royale (/pognon <tag d'un joueur>)
+- tous les tags des joueurs du clan (vas de paire avec pognon) (/tags) 
 - Qui sont les 5 plus gros donneurs (/genereux)
 
 Ne pas oublié de renommer config-vanillia.json en config.json et le remplir
@@ -36,12 +36,13 @@ Ne pas oublié de renommer config-vanillia.json en config.json et le remplir
 
 Dans l'absolu on peux mettre n'importe quel channel... les noms ce sont les miens...
 
-Le code de "pognon", "send-message-ban", bans.js est tres moche car je n'ai pas factoriser, refactoring... mais ca fonctionne...
+Le code de "pognon", "send-message-ban", bans.js est tres moche. J'ai légèrement factoriser le code mais rien de folichon.
 
 soyez indulgent merci :)
 
 ## Script en mode cron
 
-Pour le moment il y a 2 script en mode cron
+Pour le moment il y a 3 scripts en mode cron
 - send-message-ban => meme code que le script ban.js mais adapter pour le cron
 - send-message-cube => envois juste un message dans un channel pour un rappel.
+- send-message-getclan => fait un snapshot du clan le vendredi a 17h59 (permet de savoir qui est arrivé apres)
