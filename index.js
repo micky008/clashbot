@@ -1,11 +1,12 @@
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
-const { token } = require('./config.json');
+const { token, channel_all } = require('./config.json');
 const fs = require('node:fs');
 const path = require('node:path');
 
 
 // Create a new client instance
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+//https://discord.com/developers/docs/events/gateway#list-of-intents
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers ] });
 
 client.commands = new Collection();
 
@@ -46,6 +47,27 @@ client.on(Events.InteractionCreate, async interaction => {
 			await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
 		}
 	}
+});
+
+client.on(Events.GuildMemberAdd, member => { //member=GuildMember
+	let username = member.user.globalName;
+	//get client
+	let client = member.client;
+	//get channel
+	client.channels.fetch(channel_all)
+		.then(channel => {
+			let message = "bienvenue "+username+", tu es à la fois chez les fous, et... non c'est tout en fait\n"
+message += "Sinon a un chan special (sur invit) ou tout les lundi tu recois un message de : \n"
+message += "il faut recup' un cube 1 etoile sur le store de supercell.\n"
+message += "est ce que ca t'interesse ?\n"
+message += "c'est du pur spam mais c'est un rappel gratuit au moins :)\n"
+message += "on a un bot dédier aussi\n"
+message += "(le code pour les curieux) https://github.com/micky008/clashbot\n"
+message += "pour 'communiquer' avec le bot, c'est le chan 'question-au-bot' et il faut regarder le post épinglé.";
+			channel.send(message);
+		})
+		.catch(console.error);
+		
 });
 
 client.login(token);
