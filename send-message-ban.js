@@ -26,8 +26,6 @@ const rest = new REST().setToken(token);
 		let fullJson = "";
 
 		var reqGet = https.request(optionsget, res => {
-			let donnepas = [];
-			let inactifs = [];
 			res.on('data', async chunk => {
 				fullJson += chunk;
 			});
@@ -38,6 +36,7 @@ const rest = new REST().setToken(token);
 				resString += donnators;
 				montext.content = resString;
 				const data = await rest.post(Routes.channelMessages(channel_all), { body: montext });
+				//const data = await rest.post(Routes.channelMessages(channel_test), { body: montext });
 				console.log('Message send');
 			});
 
