@@ -26,8 +26,6 @@ module.exports = {
 		let fullJson = ""
 
 		var reqGet = https.request(optionsget, res => {
-			let donnepas = [];
-			let inactifs = [];
 			res.on('data', async chunk => {
 				fullJson += chunk;
 			});

@@ -18,29 +18,36 @@ module.exports = {
 			let date = new Date(res[1], res[2] - 1, res[3]);
 			let timestemp = date.getTime();
 			let now = Date.now();
-			if ((now - timestemp) >= 604800000) {
+			if ((now - timestemp) >= 604800000) { //604800000 = 7 jours
 				inactifs.push(player);
 			}
 		}
 
 		let tableau = readFileSync("./clan.json", "utf-8");
 		let vendrediPlayers = JSON.parse(tableau);
-
-		let resString = "Dans la catégorie 'Donne pas et ramasse pas' :face_in_clouds: les nominés sont:\n";
-		for (let player of inactifs) {
-			if (vendrediPlayers.findIndex(ply => ply.tag == player.tag) > 0) {
-				resString += player.name + "\n";
+		let resString = "";
+		if (inactifs.length > 0) {
+			resString += "Dans la catégorie 'Donne pas et ramasse pas' :face_in_clouds: les nominés sont:\n";
+			for (let player of inactifs) {
+				if (vendrediPlayers.findIndex(ply => ply.tag == player.tag) > 0) {
+					resString += player.name + "\n";
+				}
 			}
+			resString += "\n";
 		}
-		resString += "\n";
-		resString += "Dans la catégorie 'Ne donne pas mais ramasse':black_joker: :head_shaking_horizontally: les nominés sont:\n";
-		for (let player of donnepas) {
-			if (vendrediPlayers.findIndex(ply => ply.tag == player.tag) > 0) {
-				resString += player.name + "\n";
+		if (donnepas.length > 0) {
+			resString += "Dans la catégorie 'Ne donne pas mais ramasse':black_joker: :head_shaking_horizontally: les nominés sont:\n";
+			for (let player of donnepas) {
+				if (vendrediPlayers.findIndex(ply => ply.tag == player.tag) > 0) {
+					resString += player.name + "\n";
+				}
 			}
+			resString += "\n";
+			resString += "Qui seront les prochains élus ?";
 		}
-		resString += "\n";
-		resString += "Qui seront les prochains élus ?";
+		if (inactifs.length == 0 && donnepas.length == 0){
+			resString = "Bien joué, tout le monde joue le jeu :heart:\n";
+		}
 		return resString;
 	}
 };

@@ -1,7 +1,7 @@
 const { clash_token } = require('./config.json');
 const https = require('node:https');
 const { readFileSync } = require('node:fs');
-
+const { ban }  = require("./classes/ban.js");
 var header = {
 	"Authorization": "Bearer " + clash_token
 };
