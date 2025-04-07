@@ -60,7 +60,8 @@ client.on(Events.GuildMemberAdd, member => { //member=GuildMember
 			message += "Dans ce message de bienvenue, c'est juste pour te dire que:\n"
 			message += "- Ici c'est chill (comme dans le jeux:D )\n";
 			message += "- On a un bot dédier, et que pour 'communiquer' avec le bot, c'est le chan 'question-au-bot' et il faut regarder le post épinglé.\n"
-			message += "(le code pour les curieux) https://github.com/micky008/clashbot\n"
+			message += "(le code pour les curieux) https://github.com/micky008/clashbot\n";
+			message += "- On a un dédier (sur invitation a demander) ou tu te fais rappeler toutes les semaines que ta un bonus a récupérer dans le store de supercell (c'est du pur spam).\n"
 			channel.send(message);
 		})
 		.catch(console.error);
