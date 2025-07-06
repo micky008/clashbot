@@ -32,10 +32,12 @@ const rest = new REST().setToken(token);
 			res.on('end', async () => {
 				let resString = ban(fullJson);
 				let donnators = genereux(fullJson);
-				resString += "\n\n\n\nA l'inverse:\n";
-				resString += donnators;
+//				resString += "\n\n\n\nA l'inverse:\n";
+//				resString += donnators;
 				montext.content = resString;
-				const data = await rest.post(Routes.channelMessages(channel_all), { body: montext });
+				await rest.post(Routes.channelMessages(channel_all), { body: montext });
+				montext.content = donnators;
+				await rest.post(Routes.channelMessages(channel_all), { body: montext });
 				//const data = await rest.post(Routes.channelMessages(channel_test), { body: montext });
 				console.log('Message send');
 			});
