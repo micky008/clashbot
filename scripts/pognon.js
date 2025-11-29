@@ -137,31 +137,31 @@ class PlayedCard extends Card {
 }
 
 class RefCards {
-    //merci https://clash.world/guides/card-upgrade-costs/
-    static carte_commune_po = [0, 5, 20, 50, 150, 400, 1000, 2000, 4000, 8000, 15000, 35000, 75000, 100000];
-    static carte_commune_nb = [0, 1, 2, 4, 10, 20, 50, 100, 200, 400, 800, 1000, 1500, 3000, 5000];
-    static max_commune_po = 240625;
-    static max_commune_carte = 12087;
+    //merci https://royaleapi.com/blog/level-16-and-economy-changes-2025-q4
+    static carte_commune_po = [0, 5, 20, 50, 150, 400, 1000, 2000, 4000, 8000, 15000, 25000, 40000, 60000, 90000,120000];
+    static carte_commune_nb = [0, 1, 2, 4, 10, 20, 50, 100, 200, 400, 800, 1000, 1500, 2500,3500,5500,7500];
+    static max_commune_po = 365625;
+    static max_commune_carte = 23087;
 
     static carte_rare_po = [0, 50, 150, 400, 1000, 2000, 4000, 8000, 15000, 35000, 75000, 100000];
     static carte_rare_nb = [0, 1, 2, 4, 10, 20, 50, 100, 200, 400, 500, 750, 1250];
     static max_rare_po = 240600;
     static max_rare_carte = 3287;
 
-    static carte_epic_po = [0, 400, 2000, 4000, 8000, 15000, 35000, 75000, 100000];
-    static carte_epic_nb = [0, 1, 2, 4, 10, 20, 40, 50, 100, 200];
-    static max_epic_po = 239400;
-    static max_epic_carte = 427;
+    static carte_epic_po = [0, 50, 150, 400, 1000, 2000, 4000, 8000, 15000, 25000,40000,60000,90000,120000];
+    static carte_epic_nb = [0, 1, 2, 4, 10, 20, 50, 100, 200, 300,400,550,750,1000,1400];
+    static max_epic_po = 365600;
+    static max_epic_carte = 4787;
 
-    static carte_legendaire_po = [0, 5000, 15000, 35000, 75000, 100000];
-    static carte_lengendaire_nb = [0, 1, 2, 4, 6, 10, 20];
-    static max_legendaire_po = 230000;
-    static max_legendaire_carte = 43;
+    static carte_legendaire_po = [0, 5000, 15000, 25000,40000,60000,90000,120000];
+    static carte_lengendaire_nb = [0, 1, 2, 4, 6, 9,12,14,20];
+    static max_legendaire_po = 355000;
+    static max_legendaire_carte = 68;
 
-    static carte_champion_po = [0, 35000, 75000, 100000];
-    static carte_champion_nb = [0, 1, 2, 8, 20];
-    static max_champion_po = 210000;
-    static max_champion_carte = 31;
+    static carte_champion_po = [0, 25000,40000,60000,90000,120000];
+    static carte_champion_nb = [0, 1, 2, 5,8,11,15];
+    static max_champion_po = 335000;
+    static max_champion_carte = 42;
 
 }
 
