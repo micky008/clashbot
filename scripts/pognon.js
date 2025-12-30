@@ -35,6 +35,7 @@ class Pognon {
 
     player;
     cards; //PlayedCarte
+	cardToUpdate = [];
 
     constructor(p) {
         this.player = p;
@@ -58,9 +59,11 @@ class Pognon {
             return 0;
         }
         //nombre de carte < prochain palier
-        if (card.count < tabCarte[card.level + 1]) {
+        if (card.count < tabCarte[card.level]) {
             return 0;
         }
+		this.cardToUpdate.push(card);
+		
         return tabPo[card.level];
     }
 
@@ -101,6 +104,36 @@ class Pognon {
         return res;
     }
 
+	getRefCards(card) {
+		let pos = [];
+        let nbs = [];
+		switch (card.rarity) {
+                case "common":
+                    pos = RefCards.carte_commune_po;
+                    nbs = RefCards.carte_commune_nb;
+                    break;
+                case "rare":
+                    pos = RefCards.carte_rare_po;
+                    nbs = RefCards.carte_rare_nb;
+                    break;
+                case "epic":
+                    pos = RefCards.carte_epic_po;
+                    nbs = RefCards.carte_epic_nb;
+                    break;
+                case "legendary":
+                    pos = RefCards.carte_legendaire_po;
+                    nbs = RefCards.carte_lengendaire_nb;
+                    break;
+                case "champion":
+                    pos = RefCards.carte_champion_po;
+                    nbs = RefCards.carte_champion_nb;
+                    break;
+            }
+		let res = [];
+        res[0] = pos;
+        res[1] = nbs;
+        return res;
+	}
 
     async getPognon() { //promise<string>
         let res = this.howManyCostCards(this.cards);
@@ -112,7 +145,27 @@ class Pognon {
         resStr += "Thunes deja investie: " + formatteur.format(res[0]) + "\n";
         resStr += "Reste a mettre: " + formatteur.format(costAllMax - res[0]) + "\n";
         resStr += "\n";
-        resStr += "Total de po à mettre pour les cartes prêtes à monter de niveau: " + formatteur.format(res[1]) + "\n";
+        resStr += "Total de po à mettre pour les cartes prêtes à etre monter d'un niveau: " + formatteur.format(res[1]) + "\n";
+		this.cardToUpdate.forEach(c => {
+			let refPo = this.getRefCards(c)[0];
+			let rattrapage = 0;
+			let gap = refPo[c.level];
+			switch(c.rarity){
+				case "rare":
+					rattrapage += 3;
+                    break;
+                case "epic":
+					rattrapage += 6;
+                    break;
+                case "legendary":
+					rattrapage += 9;
+                    break;
+                case "champion":
+				rattrapage += 11;
+                    break;
+			}
+			resStr += `${c.name} => (${c.level + rattrapage}) ${formatteur.format(gap)}\n`;
+		});
         return Promise.resolve(resStr);
     }
 
@@ -128,6 +181,7 @@ class Player {
 class Card {
     name; //string
     maxLevel;//int
+	level;
     rarity;//string
 }
 
@@ -138,28 +192,28 @@ class PlayedCard extends Card {
 
 class RefCards {
     //merci https://royaleapi.com/blog/level-16-and-economy-changes-2025-q4
-    static carte_commune_po = [0, 5, 20, 50, 150, 400, 1000, 2000, 4000, 8000, 15000, 25000, 40000, 60000, 90000,120000];
-    static carte_commune_nb = [0, 1, 2, 4, 10, 20, 50, 100, 200, 400, 800, 1000, 1500, 2500,3500,5500,7500];
+    static carte_commune_po = [0, 5, 20, 50, 150, 400, 1000, 2000, 4000, 8000, 15000, 25000, 40000, 60000, 90000, 120000];
+    static carte_commune_nb = [1, 2,  4, 10,  20,  50,  100,  200,  400,  800,  1000,  1500,  2500,  3500,  5500,   7500];
     static max_commune_po = 365625;
     static max_commune_carte = 23087;
 
-    static carte_rare_po = [0, 50, 150, 400, 1000, 2000, 4000, 8000, 15000, 35000, 75000, 100000];
-    static carte_rare_nb = [0, 1, 2, 4, 10, 20, 50, 100, 200, 400, 500, 750, 1250];
-    static max_rare_po = 240600;
-    static max_rare_carte = 3287;
+    static carte_rare_po = [0, 50, 150, 400, 1000, 2000, 4000, 8000, 15000, 25000, 40000, 60000, 90000, 120000];
+    static carte_rare_nb = [1,  2,   4,  10,   20,   50,  100,  200,   300,   400,   500,   750,   1000,  1400];
+    static max_rare_po = 365600;
+    static max_rare_carte = 4787;
 
-    static carte_epic_po = [0, 50, 150, 400, 1000, 2000, 4000, 8000, 15000, 25000,40000,60000,90000,120000];
-    static carte_epic_nb = [0, 1, 2, 4, 10, 20, 50, 100, 200, 300,400,550,750,1000,1400];
-    static max_epic_po = 365600;
-    static max_epic_carte = 4787;
+    static carte_epic_po = [0, 400, 2000, 4000, 8000, 15000, 25000,40000,60000,90000,120000];
+    static carte_epic_nb = [1,   2,    4,   10,   20,    30,    50,   70,  100,  130,   180];
+    static max_epic_po = 364400;
+    static max_epic_carte = 597;
 
-    static carte_legendaire_po = [0, 5000, 15000, 25000,40000,60000,90000,120000];
-    static carte_lengendaire_nb = [0, 1, 2, 4, 6, 9,12,14,20];
+    static carte_legendaire_po =  [0, 5000, 15000, 25000, 40000, 60000, 90000, 120000];
+    static carte_lengendaire_nb = [1,    2,     4,     6,     9,    12,    14,     20];
     static max_legendaire_po = 355000;
     static max_legendaire_carte = 68;
 
-    static carte_champion_po = [0, 25000,40000,60000,90000,120000];
-    static carte_champion_nb = [0, 1, 2, 5,8,11,15];
+    static carte_champion_po = [0, 25000, 40000, 60000, 90000, 120000];
+    static carte_champion_nb = [1,     2,     5,     8,    11,     15];
     static max_champion_po = 335000;
     static max_champion_carte = 42;
 
@@ -263,4 +317,10 @@ class MyClashHttp {
 
 }
 
-
+//pouvoir lancer en "node .\scripts\pognon.js"
+// let http = new MyClashHttp();
+// http.getPlayer('LVLURYQ').then( json => {
+	// let player = JSON.parse(json);            
+	// let pognon = new Pognon(player);
+	// pognon.getPognon().then( s => console.log(s)  );
+// });
